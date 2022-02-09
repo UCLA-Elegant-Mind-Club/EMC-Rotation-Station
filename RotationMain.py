@@ -97,7 +97,7 @@ if __name__ == '__main__':
     if codeDialog.OK == False:
         core.quit()
     
-    autoProtocol = 0;
+    autoProtocol = 2;
     protocolDialog = gui.Dlg(title='Select protocol to run', screen=-1)
     protocolDialog.addField('Day: ', choices = ['1', '2'])
     protoChoices = ['A', 'B', 'C', 'D', 'E', 'F']
