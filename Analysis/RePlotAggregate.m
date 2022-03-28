@@ -25,7 +25,7 @@ S = {marker, marker, marker, marker};
 %}
 
 %% Choosing Groups to plot
-groups2Graph = [4:6];
+groups2Graph = [1:3];
 
 %make lighter tint
 for i = 1:length(colors)
@@ -37,7 +37,7 @@ protocolNames = protocolNames(groups2Graph);
 colors = colors(groups2Graph);
 S = S(groups2Graph);
 linestyle = linestyle(groups2Graph);
-titleText = "Group D Characters";
+titleText = "Group D Faces";
 
 %% Choose Large Meta Folder
 myDir = uigetdir; %gets directory
@@ -216,7 +216,8 @@ aggregatePlotting_v3(fileList, masterAngles, protocolWeightedMean, colors,...
 if ~exist('titleText', 'var'); titleText = ''; end
 title(titleText);
 fig = gcf;
-fig.Position = [500 -250 650 1000];
+fig.Position = [500 -250 850 1000];
+%fig.Position = [500 -250 650 1000];
 ylim([400 800]);
 
 
