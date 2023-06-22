@@ -1,0 +1,6 @@
+ChiPlotter Readme
+
+properties
+- xVals: x values, xError: x standard errors, yVals: y values, yError: y standard errors
+- centerIndex: index of central x value, left: left trendline, right: right trendline
+- dif: toggle slope and intercept error, weightBound: lower bound for y standard error

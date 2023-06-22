@@ -1,0 +1,118 @@
+Section by Section Breakdown with necessary changes
+*** = parameters that should be changed
+### = parameters that can be changed but have no effect on data analysis (some have aesthetic effect)
+%%% = variable that does not need changing but can be used for later data analysis
+/// = functions that can be changed depending on desired analysis methods
+>>> = new section heading
+--- = extra notes about section
+
+
+>>> Experimental Input Values (Step 01)
+### allXValues: for ease of copy and paste, put all the x values here
+*** xValues: the x values to scan for in data and plot
+	- Additional values can be added to make graph symmetric after wrapping (later)
+*** centerIndex: index location of the center value in xValues array
+	- centerIndex can correspond to the first or last indeces. The graph will just be one-sided
+*** wrapIndeces: must be even length. Each pair represents the source and target indeces to copy values
+	- ex: [numXValues 1 3 4] copies data from the last xValue into the first and the 2nd into the 3rd
+
+
+>>> Get File Info List from Folders (Step 02)
+*** folder.path: Change to the folder path to look for data files
+%%% folder.color: can later be used to determine which colors correlate to which files when not in legend
+
+
+>>> Data storage initialization
+%%% numTrials: matrix for number of trials (rows = xValue, columns = participant number)
+%%% averages: matrix for averages (rows = xValue, columns = participant number)
+%%% stdErrors: matrix for standard error (rows = xValue, columns = participant number)
+%%% leftTrends(row,1)/(row,2): matrix of left-side slope (1) and intercept (2) of trendlines before transformation
+%%% rightTrends(row,1)/(row,2): matrix for right-side slope (1) and intercept (2) of trendlines before transformation
+
+
+>>> Read Data and Remove Mistakes (Step 03)
+*** rawData.yData: depending on the file, the column to look for y data may change
+*** rawData.xData: depending on the file, the column to look for x data may change
+*** rawData.filter: depending on the file, the column to look for whether to include/exclude data may change
+	- should be an array of 1s and 0s where 1s are included and 0s are excluded
+	- multiple filters can be multiplied together
+
+
+>>> Get Sorted Data Subsets and Store Important Statistics
+/// rawData.processed: can be changed if a different method for removing outliers should be used
+
+
+>>> Wrap data around
+--- Copies data from indeces to other indeces that were omitted when processing the file
+
+
+>>> Calculate trendlines
+/// leftTrends(fileNum,:): Will implement chi square analysis later
+/// rightTrends(fileNum,:): Will implement chi square analysis later
+%%% totalTrials: total number of trials for each x value
+
+
+>>> Customize Data Points (Step 04)
+--- Read online for documentation of Matlab native functions.
+### errorBars(1)/(2): style for errorbars for individual file data (1) and aggregate data (2)
+	- horizJitter randomly moves vertical error bars left or right by a value < horizJitter to prevent overlap
+	- vertJitter randomly moves horizontal error bars up or down by a value < vertJitter to prevent overlap
+	- Jitter values should be less than dot sizes (in plotStyle) to keep errorBars inside data points
+### plotStyle(1)/(2): style for plotting data points and trendlines for individual file data (1) and aggregate data (2)
+	- plotStyle(1).colors is a list of colors for the first numColors files. After the list is exhausted, random colors will be used.
+
+
+>>> Customize Axes (Step 05)
+*** axes.bounds: set to determine axis boundaries
+	- If the length of axisBounds is 4, the bounds will be set to [xmin xmax ymin ymax]
+	- If the length of axisBounds is 2, the bounds will be set based on [xrange yrange] and the data will be centered
+	- If the length of axisBounds is 1, a buffer region will be determined by the product of this value and the data's ranges
+	- It is best to start with axisBounds = 0.1 to find the location of the data and then zoom out
+### axes.darken: sets whether to darken axes
+### axes.color: color of axes ([0 0 0] is black)
+### axes.lineWidth: width of lines to draw (best if thin but still visible)
+### axes.origin: axes origin, usually (0,0)
+
+
+
+>>> Transform trendline and data by translation and dilation (Step 06)
+*** variables: If multiple figures should be created, set variables to a vector. These values can be used in transformations as 'variable'
+	- Additionally, future simple regression analysis can replace the for loop
+*** graph.dilation/graph.translation: dilations and translations
+	- Dilations will occur before translations. To translate before dilating, simply multiple graph.translation by graph.dilation
+	- Alternatively, graph.leftFit and graph.rightFit can be modified for more complex changes
+	- Some key numbers to use are graph.averages(centerIndex, fileNum) and graph.averageIntercept (Brian recommends the former)
+	- Make sure to use a negative translation to shift downwards and a reciprocal dilation to compress
+/// graph.leftFit/rightFit: Sets how dilations and translations will affect data
+
+
+>>> Plot Transformed Data with Error Bars
+/// graph.xError: Determines how to calculate x error bars. Length will be 0 if errorBars(1).showXBars is false.
+/// graph.yError: Determines how to calculate y error bars. Length will be 0 if errorBars(1).showYBars is false.
+
+
+>>> Calculate Aggregate Data and Trendline
+%%% ymin: minimum y value, mainly used to determine range
+%%% ymax: maximum y value, mainly used to determine range
+%%% aggregate: aggregate averages
+%%% aggregateErrors: aggregate standard errors
+
+
+>>> Plot Transformed Aggregate Data with Error Bars
+/// graph.xError: Determines how to calculate x error bars. Length will be 0 if errorBars(2).showXBars is false.
+/// graph.yError: Determines how to calculate y error bars. Length will be 0 if errorBars(2).showYBars is false.
+
+
+>>> Set Graph Bounds and Draw Axes
+--- Uses the max and min values to zoom in on the graph if applicable
+--- Darkens main axes if axes.darken is true
+
+
+>>> Legend (Step 07)
+### graph.lines: If participants should not be shown, delete the last (3rd) element. Do the same for graph.labels
+### graph.labels: The individual participants can be assigned numbers by changing the last element with "" + (1:fileNum)
+	- Alternatively, the 3rd element can be replaced by a list of strings for each participant
+
+
+>>> Further analysis (Step 08)
+--- Currently creates a plot for slopes vs intercepts
